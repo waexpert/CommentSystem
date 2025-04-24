@@ -1,80 +1,31 @@
-// import axios from 'axios';
-// import { useState } from 'react';
-// import { useParams } from 'react-router-dom';
-// import { useLocation } from 'react-router-dom';
-
-// export default function MyComponent() {
-//   // const { id } = useParams();
-//   const [comment, setComment] = useState("");
-
-
-
-// function useQuery() {
-//   return new URLSearchParams(useLocation().search);
-// }
-
-// const query = useQuery();
-// const name = query.get('name');
-// const number = query.get('number');
-// const id = query.get('id');
-
-//   const submitHandle = async (e) => {
-//     e.preventDefault();
-//     try {
-//       await axios.post("https://webhooks.wa.expert/webhook/68035e9e5e36e1bf94c76ca9", {
-//         name: name,
-//         comment: comment,
-//         number:number,
-//         id : id
-//       });
-//       alert("Submitted!");
-//     } catch (err) {
-//       alert("Submission failed.");
-//       console.error(err);
-//     }
-//   };
-
-//   return (
-//     <div>
-//       <form onSubmit={submitHandle}>
-//         <input
-//           type="text"
-//           value={comment}
-//           onChange={(e) => setComment(e.target.value)}
-//         />
-//         <button type="submit" className="submit-btn">Submit</button>
-//       </form>
-//     </div>
-//   );
-// }
-
-
 import axios from 'axios';
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 
 export default function MyComponent() {
   const [comment, setComment] = useState("");
 
-  function useQuery() {
-    return new URLSearchParams(useLocation().search);
+  function useQueryObject() {
+    const searchParams = new URLSearchParams(useLocation().search);
+    const queryObj = {};
+    for (const [key, value] of searchParams.entries()) {
+      queryObj[key] = value;
+    }
+    return queryObj;
   }
 
-  const query = useQuery();
-  const name = query.get('name');
-  const number = query.get('number');
-  const id = query.get('id');
+  const queryData = useQueryObject();
 
   const submitHandle = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("https://webhooks.wa.expert/webhook/6809ce311f9f7b05383d03fa", {
-        name: name,
-        comment: comment,
-        number: number,
-        id: id
-      });
+      const payload = {
+        ...queryData,
+        comment,
+      };
+
+      await axios.post("https://webhooks.wa.expert/webhook/6809ce311f9f7b05383d03fa", payload);
+
       alert("Submitted!");
     } catch (err) {
       alert("Submission failed.");
