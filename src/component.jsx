@@ -107,6 +107,7 @@ export default function CommentForm() {
   function useQueryObject() {
     const searchParams = new URLSearchParams(useLocation().search);
     const queryObj = {};
+   
     
     for (const [key, value] of searchParams.entries()) {
       queryObj[key] = value;
@@ -114,21 +115,23 @@ export default function CommentForm() {
     
     return queryObj;
   }
+ 
 
   /**
    * Handle form submission
    */
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+      console.log(queryData)
     try {
       const payload = {
         ...queryData,
         comment,
       };
+      console.log(`https://webhooks.wa.expert/webhook/${queryData.weid}`)
 
       await axios.post(
-        "https://webhooks.wa.expert/webhook/6809ce311f9f7b05383d03fa", 
+        `https://webhooks.wa.expert/webhook/${queryData.weid}`, 
         payload
       );
 
